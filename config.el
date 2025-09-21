@@ -1,0 +1,89 @@
+(setq doom-theme 'modus-vivendi-tinted)
+;; (setq doom-font (font-spec :family "Fira Code" :size 18))
+(setq doom-font (font-spec :family "Fira Code" :size 16 :weight 'regular :slant 'normal))
+;; Use relative line numbers
+(setq display-line-numbers-type t)
+
+(setq org-directory "~/org/")
+;;
+(use-package org-bullets
+  :after org  ; <--- This is the crucial line
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(with-eval-after-load 'org
+  ;; Org headline scaling
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil
+                        :font "Cantarell"
+                        :weight 'regular
+                        :height (cdr face)))
+
+  ;; Fixed-pitch Org elements
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit '(fixed-pitch)))
+
+(with-eval-after-load 'evil
+  ;; Example: custom window bindings
+  (define-key evil-window-map (kbd "C-h") 'evil-window-left)
+  (define-key evil-window-map (kbd "C-l") 'evil-window-right)
+  (define-key evil-window-map (kbd "C-j") 'evil-window-down)
+  (define-key evil-window-map (kbd "C-k") 'evil-window-up))
+;;
+(with-eval-after-load 'evil
+  (evil-mode 1))
+
+(use-package dired
+  :ensure nil  ;; built-in, no need to install
+  :commands (dired dired-jump)
+  :bind (("C-x C-j" . dired-jump)) ;; Jump to current file's directory
+  :custom
+  (dired-listing-switches "-agho --group-directories-first") ;; nicer listing
+  :config
+ ;; Evil keybindings
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "h" 'dired-single-up-directory
+    "l" 'dired-single-buffer))
+;;Open one Dired buffer per directory
+(use-package dired-single
+  :commands (dired dired-jump))
+;;Icons for files
+(use-package all-the-icons-dired
+  :ensure t
+  :hook (dired-mode . all-the-icons-dired-mode))
+;;Open files with external apps
+(use-package dired-open
+  :ensure t
+  :commands (dired dired-jump)
+  :config
+  (setq dired-open-extensions
+        '(("png" . "feh")
+          ("mkv" . "mpv"))))
+;;Hide dotfiles in Dired
+(use-package dired-hide-dotfiles
+  :hook (dired-mode . dired-hide-dotfiles-mode)
+  :config
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "H" 'dired-hide-dotfiles-mode))
+
+(setq initial-buffer-choice 'eshell)
+
+(map! "C-h -" #'comment-line)
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 15)))
