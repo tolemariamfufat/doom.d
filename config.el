@@ -1,6 +1,9 @@
 (setq doom-theme 'modus-vivendi-tinted)
-;; (setq doom-font (font-spec :family "Fira Code" :size 18))
-(setq doom-font (font-spec :family "Fira Code" :size 16 :weight 'regular :slant 'normal))
+;;
+(setq doom-font (font-spec :family "Fira Code" :size 15))
+;; Set the font for variable-pitch text (like in org-mode headings)
+;;(setq doom-variable-pitch-font (font-spec :family "DejaVu Sans" :size 18))
+(setq doom-variable-pitch-font (font-spec :family "Noto Sans" :size 15))
 ;; Use relative line numbers
 (setq display-line-numbers-type t)
 
@@ -87,3 +90,12 @@
   :ensure t
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 15)))
+
+;; Add /bin to Emacs's executable path
+(add-to-list 'exec-path "/bin")
+;;
+(after! ispell
+  ;; Set the full path to the aspell executable
+  (setq ispell-program-name "/bin/aspell")
+  (setq ispell-dictionary "en_US") ; Or your preferred language
+)
