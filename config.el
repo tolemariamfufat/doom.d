@@ -82,7 +82,7 @@
   (evil-collection-define-key 'normal 'dired-mode-map
     "H" 'dired-hide-dotfiles-mode))
 
-(setq initial-buffer-choice 'eshell)
+(setq initial-buffer-choice 'vterm)
 
 (map! "C-h -" #'comment-line)
 
@@ -99,3 +99,22 @@
   (setq ispell-program-name "/bin/aspell")
   (setq ispell-dictionary "en_US") ; Or your preferred language
 )
+
+(defun my/center-frame ()
+  "Center the current frame on the screen."
+  (when window-system
+    (let* ((frame (selected-frame))
+           (frame-w (frame-pixel-width frame))
+           (frame-h (frame-pixel-height frame))
+           (screen-w (display-pixel-width))
+           (screen-h (display-pixel-height))
+           (pos-x (/ (- screen-w frame-w) 2))
+           (pos-y (/ (- screen-h frame-h) 2)))
+      (set-frame-position frame (max pos-x 0) (max pos-y 0)))))
+
+;; Run after frame creation
+(add-hook 'window-setup-hook #'my/center-frame)
+(add-hook 'after-make-frame-functions
+          (lambda (frame)
+            (select-frame frame)
+            (my/center-frame)))
